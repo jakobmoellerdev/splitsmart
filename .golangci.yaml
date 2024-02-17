@@ -1,0 +1,45 @@
+linters:
+  fast: true
+  enable:
+    - gci
+    - wrapcheck
+    - gofumpt
+  presets:
+    - bugs
+    - unused
+    - format
+    - complexity
+    - import
+    - performance
+    - style
+    - comment
+    - module
+    - test
+  disable:
+    - scopelint
+    - ifshort
+    - nosnakecase
+    - depguard
+
+linters-settings:
+  ireturn:
+    allow:
+      - anon
+      - error
+      - empty
+      - stdlib
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+  wsl:
+    allow-cuddle-declarations: true
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  fix: true
+run:
+  timeout: 3m

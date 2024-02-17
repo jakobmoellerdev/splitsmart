@@ -1,0 +1,72 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: CI
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Test
+        run: go build -v ./...
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+    - run: go test ./... -covermode=atomic -coverprofile=coverage.out --race
+    - name: Convert coverage.out to coverage.lcov
+      uses: jandelgado/gcov2lcov-action@v1
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        github-token: ${{ secrets.github_token }}
+        path-to-lcov: coverage.lcov
+        flag-name: Tests
+        parallel: true
+
+  collect-coverage:
+    name: Collect Coverage
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+    - uses: golangci/golangci-lint-action@v4
+
+    

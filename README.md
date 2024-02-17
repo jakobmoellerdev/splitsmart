@@ -1,0 +1,1 @@
+[![Coverage Status](https://coveralls.io/repos/github/jakobmoellerdev/splitsmart/badge.svg)](https://coveralls.io/github/jakobmoellerdev/splitsmart)
