@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: Splitsmart REST API Specification
+  description: |-
+    This is the Splitsmart REST API Specification in openAPI.
+  contact:
+    email: contact@jakob-moeller.com
+  license:
+    name: Apache 2.0
+    url: https://github.com/jakobmoellerdev/splitsmart/blob/main/LICENSE
+  version: v1alpha1
+externalDocs:
+  description: GitHub
+  url: https://github.com/jakobmoellerdev/splitsmart
+servers:
+  - url: http://localhost:8080/v1alpha1
+    description: Run it Locally to try it out!
+tags:
+  - name: auth
+    description: Everything Related to Authentication
+  - name: health
+    description: Access to Healthiness / Readiness Information
+paths:
+  /register:
+    post:
+      tags:
+        - auth
+      operationId: register
+      summary: Register a new User
+      description: Registers a new User with the Service
+      requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+      responses:
+        '200':
+            description: Successful Registration
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RegistrationResult'
+        '400':
+            description: Invalid Registration
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/RegistrationResult'
+  /ready:
+    get:
+      tags:
+        - health
+      operationId: isReady
+      summary: Checks if the Service is Operational
+      description: Performs a Readiness check (with dependencies included)
+      responses:
+        '200':
+          description: Successful Readiness
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthAggregation'
+        '503':
+          description: Failure during Readiness Check
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthAggregation'
+  /health:
+    get:
+      tags:
+        - health
+      operationId: isHealthy
+      summary: Checks if the Service is Available for Processing Request
+      description: Performs a Health check of the HTTP Router
+      responses:
+        '200':
+          description: Successful Healthiness
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthAggregation'
+components:
+  parameters:
+    ID:
+      name: id
+      required: true
+      description: "Strict Identifier of a Component in the form of a UUID"
+      in: path
+      allowEmptyValue: false
+      schema:
+        $ref: '#/components/schemas/ID'
+  schemas:
+    ModifiedAtTimestamp:
+      type: string
+      description: "A Timestamp indicating when a datum was last modified"
+      format: date-time
+    HealthAggregationComponent:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "The Name of the Component to be Health Checked"
+        health:
+          $ref: '#/components/schemas/HealthResult'
+      required:
+        - name
+        - health
+    HealthResult:
+      type: string
+      description: "A Health Check Result"
+      enum:
+        - "Up"
+        - "Down"
+    HealthAggregation:
+      type: object
+      properties:
+        health:
+          $ref: '#/components/schemas/HealthResult'
+        components:
+          description: "The different Components of the Server"
+          type: array
+          items:
+            $ref: '#/components/schemas/HealthAggregationComponent'
+      required:
+        - health
+    ListItemCount:
+      type: integer
+      description: "Amount of Items contained in List"
+    ModuleDataStream:
+      type: string
+      format: binary
+      description: "Module Data Stream"
+    ID:
+      type: string
+      description: "An object ID (in the form of UUID)"
+      format: uuid
+    Registration:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    RegistrationResult:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+  securitySchemes:
+    deviceAuth:
+      type: http
+      scheme: basic
