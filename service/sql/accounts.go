@@ -2,6 +2,7 @@ package sql
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jakobmoellerdev/splitsmart/service"
 	"github.com/uptrace/bun"
@@ -19,7 +20,7 @@ func (svc *accounts) Find(ctx context.Context, username string) (service.Account
 	acct := new(Account)
 
 	if err := svc.DB.NewSelect().Model(acct).Where("username = ?", username).Scan(ctx); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while finding account: %w", err)
 	}
 
 	return acct, nil
@@ -33,7 +34,7 @@ func (svc *accounts) Create(ctx context.Context, username string, password []byt
 	account := NewAccount(username, password)
 
 	if _, err := svc.DB.NewInsert().Model(account).Exec(ctx); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error while creating account: %w", err)
 	}
 
 	return account, nil

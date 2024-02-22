@@ -21,7 +21,6 @@ const (
 	passLength, minSpecial, minNum = 32, 6, 6
 )
 
-//nolint:funlen
 func (api *API) Register(ctx echo.Context) error {
 	var account service.Account
 
@@ -101,5 +100,6 @@ func (api *API) defaultPassword(password string) (string, error) {
 
 func (api *API) hash256(password []byte) []byte {
 	sha := sha256.Sum256(password)
+
 	return sha[:]
 }

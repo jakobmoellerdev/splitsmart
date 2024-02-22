@@ -4,8 +4,9 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"strings"
+
+	"github.com/labstack/echo/v4"
 )
 
 const (

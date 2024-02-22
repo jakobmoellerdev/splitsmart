@@ -17,6 +17,7 @@ import (
 func Run(ctx context.Context, db *bun.DB, cfg *config.Config) error {
 	log := logger.FromContext(ctx)
 	startUpContext, cancelStartUpContext := context.WithCancel(ctx)
+
 	defer cancelStartUpContext()
 
 	srv := createServer(startUpContext, cfg)
@@ -38,9 +39,11 @@ func Run(ctx context.Context, db *bun.DB, cfg *config.Config) error {
 			// Error from closing listeners, or context timeout:
 			log.Warn().Msg("server shutdown error: " + err.Error())
 		}
+
 		if err := db.Close(); err != nil {
 			log.Warn().Msg("database close error: " + err.Error())
 		}
+
 		close(idleConsClosed)
 	}
 

@@ -19,7 +19,7 @@ func TestRun(t *testing.T) {
 	go func(ctx context.Context, t *testing.T) {
 		assert.New(t).NoError(
 			server.Run(
-				log.WithContext(ctx), &config.Config{},
+				log.WithContext(ctx), nil, &config.Config{},
 			),
 		)
 	}(ctx, t)

@@ -3,9 +3,8 @@ package v1alpha1
 import (
 	"fmt"
 
-	"github.com/jakobmoellerdev/splitsmart/service"
-
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1/REST"
+	"github.com/jakobmoellerdev/splitsmart/service"
 	"github.com/labstack/echo/v4"
 )
 

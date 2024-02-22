@@ -3,6 +3,7 @@ package sql
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"sync"
 
 	"github.com/jakobmoellerdev/splitsmart/config"
@@ -19,30 +20,42 @@ var connMu sync.RWMutex
 func connect(cfg *config.Config) error {
 	connMu.Lock()
 	defer connMu.Unlock()
+
 	if conn != nil {
 		return nil
 	}
+
 	sqldb, err := sql.Open(sqliteshim.ShimName, cfg.SQL.DataSource)
 	if err != nil {
-		return err
+		return fmt.Errorf("error while opening database: %w", err)
 	}
+
 	conn = bun.NewDB(sqldb, sqlitedialect.New())
+
 	return nil
 }
 
 func DB(ctx context.Context, cfg *config.Config) (*bun.DB, error) {
 	log := logger.FromContext(ctx)
+
 	connMu.RLock()
+
 	if conn != nil {
 		log.Info().Msg("Using existing connection to database")
 		defer connMu.RUnlock()
+
 		return conn, nil
 	}
+
 	connMu.RUnlock()
+
 	log.Info().Msg("Establishing new connection to database")
+
 	if err := connect(cfg); err != nil {
 		return nil, err
 	}
+
 	log.Info().Msg("Connection to database established")
+
 	return conn, nil
 }

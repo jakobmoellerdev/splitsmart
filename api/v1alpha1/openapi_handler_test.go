@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
-
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1/REST"
 	"github.com/labstack/echo/v4"
 )

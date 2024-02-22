@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/jakobmoellerdev/splitsmart/service"
-	"github.com/sethvargo/go-password/password"
-
 	"github.com/rs/zerolog"
+	"github.com/sethvargo/go-password/password"
 	"gopkg.in/yaml.v3"
 )
 

@@ -11,10 +11,9 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
 	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
-
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"

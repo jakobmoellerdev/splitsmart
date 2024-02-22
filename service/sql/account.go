@@ -4,8 +4,9 @@ import (
 	"context"
 	"crypto/sha256"
 	"crypto/subtle"
-	"github.com/uptrace/bun"
 	"time"
+
+	"github.com/uptrace/bun"
 )
 
 type Account struct {
@@ -28,6 +29,7 @@ func (r *Account) GetCreatedAt() time.Time {
 
 func (r *Account) Verify(password []byte) bool {
 	sha := sha256.Sum256(password)
+
 	return subtle.ConstantTimeCompare(r.Password, sha[:]) == 1
 }
 
@@ -40,6 +42,7 @@ func (r *Account) BeforeAppendModel(ctx context.Context, query bun.Query) error 
 	case *bun.UpdateQuery:
 		r.UpdatedAt = time.Now()
 	}
+
 	return nil
 }
 

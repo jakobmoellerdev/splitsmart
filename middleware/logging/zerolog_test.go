@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
-
 	json "github.com/json-iterator/go"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
@@ -29,6 +28,7 @@ func TestRequestLogging(t *testing.T) {
 	router := echo.New()
 	ctx := router.NewContext(req, rec)
 	ctx.SetRequest(ctx.Request().WithContext(log.WithContext(req.Context())))
+
 	assertions := assert.New(t)
 
 	err := logging.RequestLogging()(func(ctx echo.Context) error {

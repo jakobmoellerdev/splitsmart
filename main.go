@@ -5,14 +5,13 @@ import (
 	"log"
 	"runtime/debug"
 
+	"github.com/google/uuid"
 	"github.com/jakobmoellerdev/splitsmart/config"
 	"github.com/jakobmoellerdev/splitsmart/server"
 	"github.com/jakobmoellerdev/splitsmart/service/sql"
-	"github.com/sethvargo/go-password/password"
-
-	"github.com/google/uuid"
 	"github.com/rs/zerolog"
 	baseLogger "github.com/rs/zerolog/log"
+	"github.com/sethvargo/go-password/password"
 )
 
 var (
@@ -23,6 +22,8 @@ var (
 )
 
 // Func main should be as small as possible and do as little as possible by convention.
+//
+//nolint:funlen
 func main() {
 	uuid.EnableRandPool()
 	// Generate our config based on the config supplied
@@ -58,7 +59,9 @@ func main() {
 		if revision == "" {
 			revision = "dev"
 		}
+
 		logger = logger.With().Str("revision", revision).Logger()
+
 		logger.Info().
 			Str("version", version).
 			Str("commit", commit).
@@ -70,7 +73,6 @@ func main() {
 	ctx := logger.WithContext(context.Background())
 
 	cfg.PasswordGenerator, err = password.NewGenerator(nil)
-
 	if err != nil {
 		log.Fatal(err)
 	}

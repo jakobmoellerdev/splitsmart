@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
 	"github.com/jakobmoellerdev/splitsmart/config"
 	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
-
-	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
