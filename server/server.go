@@ -3,17 +3,19 @@ package server
 import (
 	"context"
 	"errors"
-	"github.com/jakobmoellerdev/splitsmart/config"
-	"github.com/jakobmoellerdev/splitsmart/service/sql"
 	"net/http"
 	"os"
 	"os/signal"
 
 	"github.com/jakobmoellerdev/splitsmart/api"
+	"github.com/jakobmoellerdev/splitsmart/config"
+	"github.com/jakobmoellerdev/splitsmart/logger"
+	"github.com/jakobmoellerdev/splitsmart/service/sql"
 )
 
 // Run will run the HTTP Server.
 func Run(ctx context.Context, cfg *config.Config) error {
+	log := logger.FromContext(ctx)
 	startUpContext, cancelStartUpContext := context.WithCancel(ctx)
 	defer cancelStartUpContext()
 
@@ -34,7 +36,7 @@ func Run(ctx context.Context, cfg *config.Config) error {
 
 		if err := srv.Shutdown(ctx); err != nil {
 			// Error from closing listeners, or context timeout:
-			cfg.Logger.Warn().Msg("server shutdown error: " + err.Error())
+			log.Warn().Msg("server shutdown error: " + err.Error())
 		}
 
 		close(idleConsClosed)
@@ -44,11 +46,11 @@ func Run(ctx context.Context, cfg *config.Config) error {
 
 	// service connections
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		cfg.Logger.Fatal().Msg("listen: %s" + err.Error())
+		log.Fatal().Msg("listen: %s" + err.Error())
 	}
 
 	<-idleConsClosed
-	cfg.Logger.Info().Msg("server shut down finished")
+	log.Info().Msg("server shut down finished")
 
 	return nil
 }

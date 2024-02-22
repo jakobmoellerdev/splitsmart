@@ -3,10 +3,11 @@ package api
 import (
 	"context"
 	"errors"
-	"github.com/jakobmoellerdev/splitsmart/config"
-	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 	"net/http"
 	"time"
+
+	"github.com/jakobmoellerdev/splitsmart/config"
+	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
 	"github.com/labstack/echo/v4"
@@ -57,7 +58,8 @@ func New(ctx context.Context, config *config.Config) http.Handler {
 	// Global Middleware for Error Recovery and Request Logging
 	router.Use(
 		middleware.Recover(),
-		logging.RequestLogging(config.Logger),
+		logging.InjectFromContext(ctx),
+		logging.RequestLogging(),
 	)
 
 	if config.Server.MaxRequestBodySize == "" {
@@ -66,7 +68,7 @@ func New(ctx context.Context, config *config.Config) http.Handler {
 	// Body Size Limitation to avoid Request DOS
 	router.Use(middleware.BodyLimit(config.Server.MaxRequestBodySize))
 
-	v1alpha1.New(ctx, router, config)
+	v1alpha1.New(ctx, router)
 
 	return router
 }

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"splitsmart/pkg/splitcore"
+	"github.com/jakobmoellerdev/splitsmart/splitcore"
 )
 
 const dtFormat = "2006-01-02"

@@ -1,16 +1,18 @@
 package v1alpha1_test
 
 import (
+	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
-	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
+	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -27,7 +29,10 @@ func SetupAPITest(t *testing.T) (zerolog.Logger, *assert.Assertions, *echo.Echo)
 	t.Helper()
 	logger := zerolog.New(zerolog.NewConsoleWriter(zerolog.ConsoleTestWriter(t)))
 	api := echo.New()
-	api.Use(logging.RequestLogging(&logger))
+	api.Use(
+		logging.InjectFromContext(logger.WithContext(context.Background())),
+		logging.RequestLogging(),
+	)
 
 	return logger, assert.New(t), api
 }

@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	"fmt"
+
 	"github.com/jakobmoellerdev/splitsmart/service"
 
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1/REST"
@@ -9,7 +10,9 @@ import (
 )
 
 func (api *API) IsReady(ctx echo.Context) error {
-	aggregation := service.HealthAggregator([]service.HealthCheck{}).Check(ctx.Request().Context())
+	aggregation := service.HealthAggregator([]service.HealthCheck{
+		api.Accounts.HealthCheck(),
+	}).Check(ctx.Request().Context())
 
 	components := make([]REST.HealthAggregationComponent, len(aggregation.Components))
 	for i, component := range aggregation.Components {

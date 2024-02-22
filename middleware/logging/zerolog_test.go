@@ -2,12 +2,13 @@ package logging_test
 
 import (
 	"bytes"
-	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/jakobmoellerdev/splitsmart/middleware/logging"
 
 	json "github.com/json-iterator/go"
 	"github.com/labstack/echo/v4"
@@ -25,10 +26,12 @@ func TestRequestLogging(t *testing.T) {
 
 	req.Header.Set("x-request-id", "test")
 
-	ctx := echo.New().NewContext(req, rec)
+	router := echo.New()
+	ctx := router.NewContext(req, rec)
+	ctx.SetRequest(ctx.Request().WithContext(log.WithContext(req.Context())))
 	assertions := assert.New(t)
 
-	err := logging.RequestLogging(&log)(func(ctx echo.Context) error {
+	err := logging.RequestLogging()(func(ctx echo.Context) error {
 		return ctx.String(http.StatusOK, "test") //nolint:wrapcheck
 	})(ctx)
 

@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
+	"runtime/debug"
+
 	"github.com/jakobmoellerdev/splitsmart/config"
 	"github.com/jakobmoellerdev/splitsmart/server"
 	"github.com/sethvargo/go-password/password"
-	"log"
-	"runtime/debug"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog"
@@ -52,11 +52,20 @@ func main() {
 	}
 
 	if info, ok := debug.ReadBuildInfo(); ok {
-		logger = logger.With().Str("build", info.Main.Version).Logger()
-		logger.Info().Msg(fmt.Sprintf("Welcome to Octi: %s, commit %s, built at %s by %s", version, commit, date, builtBy))
+		revision := info.Main.Version
+		if revision == "" {
+			revision = "dev"
+		}
+		logger = logger.With().Str("revision", revision).Logger()
+		logger.Info().
+			Str("version", version).
+			Str("commit", commit).
+			Str("date", date).
+			Str("builtBy", builtBy).
+			Msg("Welcome to Splitsmart!")
 	}
 
-	cfg.Logger = &logger
+	ctx := logger.WithContext(context.Background())
 
 	cfg.PasswordGenerator, err = password.NewGenerator(nil)
 
@@ -71,7 +80,7 @@ func main() {
 	uuid.EnableRandPool()
 
 	// Run the server
-	if err := server.Run(context.Background(), cfg); err != nil {
+	if err := server.Run(ctx, cfg); err != nil {
 		log.Fatal(err)
 	}
 }

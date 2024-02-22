@@ -4,11 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/jakobmoellerdev/splitsmart/service"
-	"github.com/sethvargo/go-password/password"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/jakobmoellerdev/splitsmart/service"
+	"github.com/sethvargo/go-password/password"
 
 	"github.com/rs/zerolog"
 	"gopkg.in/yaml.v3"
@@ -74,7 +75,6 @@ type Config struct {
 	service.UsernameGenerator  `yaml:"-"`
 
 	LogSettings `yaml:"log"`
-	Logger      *zerolog.Logger `yaml:"-"`
 
 	Services struct {
 		service.Accounts

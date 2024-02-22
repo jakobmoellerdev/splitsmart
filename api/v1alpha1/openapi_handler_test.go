@@ -1,10 +1,12 @@
 package v1alpha1_test
 
 import (
-	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1"
 
 	"github.com/jakobmoellerdev/splitsmart/api/v1alpha1/REST"
 	"github.com/labstack/echo/v4"
@@ -17,7 +19,7 @@ func TestOpenAPIHandler_ServeOpenAPI(t *testing.T) {
 
 	assertions.NoError(err)
 
-	handler := v1alpha1.NewOpenAPIHandler(swagger, &log)
+	handler := v1alpha1.NewOpenAPIHandler(log.WithContext(context.Background()), swagger)
 	req := emptyRequest(http.MethodGet)
 	rec := httptest.NewRecorder()
 	ctx := api.NewContext(req, rec)

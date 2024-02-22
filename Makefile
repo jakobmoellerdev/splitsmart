@@ -48,7 +48,7 @@ build: ## Build manager binary.
 
 .PHONY: test
 test: ## Run tests.
-	go test ./... -covermode atomic -cover
+	go test ./... -covermode atomic -cover -test.v
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint against code.

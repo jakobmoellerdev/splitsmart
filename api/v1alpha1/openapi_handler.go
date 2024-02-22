@@ -1,11 +1,13 @@
 package v1alpha1
 
 import (
+	"context"
 	_ "embed" // imported for openapi specification embedding
 	"fmt"
 	"net/http"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/jakobmoellerdev/splitsmart/logger"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 )
@@ -38,13 +40,13 @@ func (h *OpenAPIHandler) ServeOpenAPI(ctx echo.Context) error {
 	return nil
 }
 
-func NewOpenAPIHandler(openAPI *openapi3.T, logger *zerolog.Logger) *OpenAPIHandler {
+func NewOpenAPIHandler(ctx context.Context, openAPI *openapi3.T) *OpenAPIHandler {
 	serversToLog := zerolog.Arr()
 	for _, server := range openAPI.Servers {
 		serversToLog = serversToLog.Str(server.URL)
 	}
 
-	log := logger.With().
+	log := logger.FromContext(ctx).With().
 		Str("api", openAPI.Info.Title).
 		Str("version", openAPI.Info.Version).
 		Array("servers", serversToLog).

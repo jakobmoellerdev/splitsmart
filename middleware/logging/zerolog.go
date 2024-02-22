@@ -3,12 +3,12 @@ package logging
 import (
 	"net"
 
+	"github.com/jakobmoellerdev/splitsmart/logger"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/rs/zerolog"
 )
 
-func RequestLogging(logger *zerolog.Logger) echo.MiddlewareFunc {
+func RequestLogging() echo.MiddlewareFunc {
 	return middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogURI:           true,
 		LogStatus:        true,
@@ -21,7 +21,7 @@ func RequestLogging(logger *zerolog.Logger) echo.MiddlewareFunc {
 		LogResponseSize:  true,
 		LogUserAgent:     true,
 		LogValuesFunc: func(context echo.Context, values middleware.RequestLoggerValues) error {
-			logger.Debug().
+			logger.FromContext(context.Request().Context()).Debug().
 				Str("Method", values.Method).
 				Str("URI", values.URI).
 				Int("status", values.Status).
