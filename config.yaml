@@ -7,6 +7,8 @@ server:
     write: 10s
     idle: 5s
   maxRequestBodySize: 64KB
+  sql:
+    dataSource: "file::memory:?cache=shared"
   cors:
     allowOrigins:
       - "*"

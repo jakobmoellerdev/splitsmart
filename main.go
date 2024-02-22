@@ -7,6 +7,7 @@ import (
 
 	"github.com/jakobmoellerdev/splitsmart/config"
 	"github.com/jakobmoellerdev/splitsmart/server"
+	"github.com/jakobmoellerdev/splitsmart/service/sql"
 	"github.com/sethvargo/go-password/password"
 
 	"github.com/google/uuid"
@@ -23,6 +24,7 @@ var (
 
 // Func main should be as small as possible and do as little as possible by convention.
 func main() {
+	uuid.EnableRandPool()
 	// Generate our config based on the config supplied
 	// by the user in the flags
 	cfgPath, err := config.ParseFlags()
@@ -77,10 +79,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	uuid.EnableRandPool()
+	db, err := sql.DB(ctx, cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cfg.Services.Accounts = sql.NewAccounts(db)
 
 	// Run the server
-	if err := server.Run(ctx, cfg); err != nil {
+	if err := server.Run(ctx, db, cfg); err != nil {
 		log.Fatal(err)
 	}
 }

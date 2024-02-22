@@ -10,11 +10,11 @@ import (
 	"github.com/jakobmoellerdev/splitsmart/api"
 	"github.com/jakobmoellerdev/splitsmart/config"
 	"github.com/jakobmoellerdev/splitsmart/logger"
-	"github.com/jakobmoellerdev/splitsmart/service/sql"
+	"github.com/uptrace/bun"
 )
 
 // Run will run the HTTP Server.
-func Run(ctx context.Context, cfg *config.Config) error {
+func Run(ctx context.Context, db *bun.DB, cfg *config.Config) error {
 	log := logger.FromContext(ctx)
 	startUpContext, cancelStartUpContext := context.WithCancel(ctx)
 	defer cancelStartUpContext()
@@ -38,7 +38,9 @@ func Run(ctx context.Context, cfg *config.Config) error {
 			// Error from closing listeners, or context timeout:
 			log.Warn().Msg("server shutdown error: " + err.Error())
 		}
-
+		if err := db.Close(); err != nil {
+			log.Warn().Msg("database close error: " + err.Error())
+		}
 		close(idleConsClosed)
 	}
 
@@ -56,9 +58,6 @@ func Run(ctx context.Context, cfg *config.Config) error {
 }
 
 func createServer(startUpContext context.Context, cfg *config.Config) *http.Server {
-
-	cfg.Services.Accounts = new(sql.Accounts)
-
 	// Define server options
 	srv := &http.Server{
 		Addr:              cfg.Server.Host + ":" + cfg.Server.Port,
