@@ -10,7 +10,7 @@ require (
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/rs/zerolog v1.32.0
 	github.com/sethvargo/go-password v0.2.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/uptrace/bun v1.1.17
 	github.com/uptrace/bun/dialect/sqlitedialect v1.1.17
 	github.com/uptrace/bun/driver/sqliteshim v1.1.17
